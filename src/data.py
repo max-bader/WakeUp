@@ -31,3 +31,14 @@ def save_entry(entry: dict) ->  None:
     Append a single entry (with keys, date, alarm_time, wakeup_time, snoozes)
     into CSV. Create file if doesn't exist.
     """
+    # load existing data or empty DataFrame
+    df = load_data()
+
+    # build a one row DataFrame from dict ensure we use only expected cols
+    cols = ["date", "alarm_time", "wakeup_time", "snoozes"]
+    row = {k: entry[k] for k in cols}
+    new_df = pd.DataFrame([row])
+
+    # concatenate and write back out
+    df = pd.concat([df, new_df], ignore_index=True)
+    df.to_csv(DATA_FILE, index=False)
