@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WakeUp - Smart Alarm Clock</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-content">
+                <h1 class="app-title">
+                    <i class="fas fa-sun"></i>
+                    WakeUp
+                </h1>
+                <p class="app-subtitle">Smart Alarm Clock with Adaptive Learning</p>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Alarm Control Panel -->
+            <section class="alarm-panel">
+                <div class="panel-header">
+                    <h2><i class="fas fa-clock"></i> Alarm Control</h2>
+                </div>
+                
+                <div class="alarm-controls">
+                    <div class="time-input-group">
+                        <label for="alarm-time">Set Alarm Time:</label>
+                        <input type="time" id="alarm-time" value="07:00" class="time-input">
+                        <button id="set-alarm-btn" class="btn btn-primary">
+                            <i class="fas fa-play"></i> Set Alarm
+                        </button>
+                    </div>
+                    
+                    <div class="adaptive-info">
+                        <button id="get-adaptive-btn" class="btn btn-secondary">
+                            <i class="fas fa-brain"></i> Get Smart Time
+                        </button>
+                        <div id="adaptive-time-display" class="adaptive-display"></div>
+                    </div>
+                </div>
+
+                <!-- Alarm Status -->
+                <div id="alarm-status" class="alarm-status">
+                    <div class="status-indicator">
+                        <div class="status-light" id="status-light"></div>
+                        <span id="status-text">Alarm Not Set</span>
+                    </div>
+                    <div id="alarm-info" class="alarm-info"></div>
+                </div>
+
+                <!-- Alarm Actions -->
+                <div id="alarm-actions" class="alarm-actions" style="display: none;">
+                    <button id="stop-alarm-btn" class="btn btn-danger">
+                        <i class="fas fa-stop"></i> Stop Alarm
+                    </button>
+                    <button id="snooze-alarm-btn" class="btn btn-warning">
+                        <i class="fas fa-bed"></i> Snooze (5 min)
+                    </button>
+                </div>
+            </section>
+
+            <!-- Stats Dashboard -->
+            <section class="stats-dashboard">
+                <div class="panel-header">
+                    <h2><i class="fas fa-chart-line"></i> Your Progress</h2>
+                </div>
+                
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-calendar-day"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3>{{ total_days }}</h3>
+                            <p>Days Tracked</p>
+                        </div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-star"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3>{{ total_points }}</h3>
+                            <p>Total Points</p>
+                        </div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-bed"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3>{{ avg_snoozes }}</h3>
+                            <p>Avg Snoozes</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Recent History -->
+            <section class="history-section">
+                <div class="panel-header">
+                    <h2><i class="fas fa-history"></i> Recent History</h2>
+                </div>
+                
+                <div class="history-content">
+                    {% if recent_data %}
+                        <div class="history-list">
+                            {% for entry in recent_data %}
+                            <div class="history-item">
+                                <div class="history-date">
+                                    {{ entry.date }}
+                                </div>
+                                <div class="history-details">
+                                    <div class="history-time">
+                                        <i class="fas fa-clock"></i>
+                                        {{ entry.alarm_time }} → {{ entry.wakeup_time }}
+                                    </div>
+                                    <div class="history-snoozes">
+                                        <i class="fas fa-bed"></i>
+                                        {{ entry.snoozes }} snooze{{ 's' if entry.snoozes != 1 else '' }}
+                                    </div>
+                                </div>
+                                <div class="history-score">
+                                    {% if entry.snoozes == 0 %}
+                                        <span class="score excellent">+10</span>
+                                    {% elif entry.snoozes <= 2 %}
+                                        <span class="score good">+5</span>
+                                    {% else %}
+                                        <span class="score poor">-5</span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <div class="no-data">
+                            <i class="fas fa-chart-line"></i>
+                            <p>No data yet. Set your first alarm to start tracking!</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </section>
+        </main>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <p>&copy; 2024 WakeUp - Smart Alarm Clock</p>
+        </footer>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+</body>
+</html>
